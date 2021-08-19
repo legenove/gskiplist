@@ -157,7 +157,7 @@ func (sl *SkipList) deleteNode(node *Node, update []*Node) {
     sl.length--
 }
 
-func (sl *SkipList) Delete(score float64, element Element) (int, error) {
+func (sl *SkipList) Delete(score float64, element Element) (int64, error) {
     if sl == nil {
         return 0, errors.New("skip list is nil")
     }
@@ -222,7 +222,7 @@ func (sl *SkipList) IsInRank(index int64) bool {
 
 func (sl *SkipList) IsInRange(spec *RangeSpec) bool {
     if spec.Min > spec.Max ||
-        (spec.Min == spec.Max && (spec.MinEx || spec.MaxEx)) {
+        (spec.Min == spec.Max && spec.OpenRange()) {
         return false
     }
     x := sl.tail

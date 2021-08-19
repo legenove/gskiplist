@@ -27,23 +27,25 @@ func NewSortSet() *SortSet {
     }
 }
 
-func (ss *SortSet) Add(score float64, element Element) error {
+func (ss *SortSet) Add(score float64, element Element) (int64, error) {
     ss.mu.Lock()
     defer ss.mu.Unlock()
     var err error
+    var num int64
     if oldE, ok := ss.Mapper[element.String()]; ok {
         _, err = ss.skipList.UpdateScore(oldE.Score, element, score)
     } else {
+        num += 1
         _, err = ss.skipList.Insert(score, element)
     }
     if err != nil {
-        return err
+        return 0, err
     }
     ss.Mapper[element.String()] = &ElementWithScores{Score: score, Ele: element}
-    return nil
+    return num, nil
 }
 
-func (ss *SortSet) Del(element Element) (int, error) {
+func (ss *SortSet) Del(element Element) (int64, error) {
     ss.mu.Lock()
     defer ss.mu.Unlock()
     if oldE, ok := ss.Mapper[element.String()]; ok {
@@ -139,7 +141,7 @@ func (ss *SortSet) RangeByScore(spec *RangeSpec, count int64) []Element {
 
     l := count
     if count > ss.Card()-k+1 {
-        l = ss.Card()-k+1
+        l = ss.Card() - k + 1
     }
     res := make([]Element, 0, l)
     for node != nil && spec.ValueLteMax(node.score) && count > 0 {
@@ -163,7 +165,7 @@ func (ss *SortSet) RangeByScoreWithScores(spec *RangeSpec, count int64) []*Eleme
 
     l := count
     if count > ss.Card()-k+2 {
-        l = ss.Card()-k+2
+        l = ss.Card() - k + 2
     }
     res := make([]*ElementWithScores, 0, l)
     for node != nil && spec.ValueLteMax(node.score) && count > 0 {

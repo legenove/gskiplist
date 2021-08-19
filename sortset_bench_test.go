@@ -100,3 +100,35 @@ func BenchmarkNewSortSet_Del(b *testing.B) {
         s.Del(MockElement(strconv.Itoa(i)))
     }
 }
+
+func TestNil_String(t *testing.T) {
+    fmt.Println(strconv.FormatUint(9223372036854775808, 10))
+    fmt.Println(strconv.FormatUint(9223372036854775808, 16))
+    fmt.Println(strconv.FormatUint(9223372036854775808, 32))
+    fmt.Println(strconv.FormatUint(9223372036854775808, 2))
+}
+
+func Benchmark111(t *testing.B) {
+    for i := 0; i < t.N ; i++ {
+        strconv.FormatUint(9223372036854775808, 10)
+    }
+}
+
+
+func Benchmark112(t *testing.B) {
+    for i := 0; i < t.N ; i++ {
+        strconv.FormatUint(9223372036854775808, 2)
+    }
+}
+
+func Benchmark113(t *testing.B) {
+    for i := 0; i < t.N ; i++ {
+        strconv.FormatUint(9223372036854775808, 32)
+    }
+}
+
+func Benchmark114(t *testing.B) {
+    for i := 0; i < t.N ; i++ {
+        strconv.FormatUint(9223372036854775808, 16)
+    }
+}
